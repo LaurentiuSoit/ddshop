@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 
+@NamedQuery(name = "ShopUser.findByEmail", query = "select u from ShopUser u where u.email=:email")
 @Data
 @Entity
 @Table(name = "shop_user")
