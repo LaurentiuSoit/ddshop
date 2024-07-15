@@ -19,9 +19,9 @@ public class ProductRest {
     ProductService productService;
 
     @GetMapping(path = "/getAll")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(String sortBy) {
         try {
-            return productService.getAllProducts();
+            return productService.getAllProductsSortedBy(sortBy);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

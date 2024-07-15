@@ -5,15 +5,12 @@ import dd.projects.ddshop.Entities.Product;
 import dd.projects.ddshop.Mappers.ProductMapper;
 import dd.projects.ddshop.Repositories.ProductDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -38,11 +35,28 @@ public class ProductService {
         return new ResponseEntity<String>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(String sortBy) {
         try {
-            List<ProductDTO> productDTOList = productMapper.toDTOList(
-                    productDao.findAll(Sort.by(Sort.Direction.DESC, "addedDate")));
-            return new ResponseEntity<>(productDTOList, HttpStatus.OK);
+            List<ProductDTO> productDTOList = productMapper.toDTOList(productDao.findAll());
+            Comparator<ProductDTO> productDTOComparator;
+            switch (sortBy.toLowerCase()) {
+                case "newest":
+                    productDTOComparator = Comparator.comparing(ProductDTO::getAddedDate);
+                    productDTOComparator = productDTOComparator.reversed();
+                    break;
+                case "price ascending":
+                    productDTOComparator = Comparator.comparing(ProductDTO::getPrice);
+                    break;
+                case "price descending":
+                    productDTOComparator = Comparator.comparing(ProductDTO::getPrice);
+                    productDTOComparator = productDTOComparator.reversed();
+                    break;
+                default:
+                    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(productDTOList.stream()
+                    .sorted(productDTOComparator)
+                    .collect(Collectors.toList()), HttpStatus.OK);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
