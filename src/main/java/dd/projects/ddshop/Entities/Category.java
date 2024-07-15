@@ -2,8 +2,11 @@ package dd.projects.ddshop.Entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.io.Serial;
 import java.io.Serializable;
+
+@NamedQuery(name = "Category.findByName", query = "select c from Category c where c.name=:name")
 
 @Data
 @Entity

@@ -1,8 +1,10 @@
 package dd.projects.ddshop.Services;
 
 import dd.projects.ddshop.DTOs.ProductDTO;
+import dd.projects.ddshop.Entities.Category;
 import dd.projects.ddshop.Entities.Product;
 import dd.projects.ddshop.Mappers.ProductMapper;
+import dd.projects.ddshop.Repositories.CategoryDao;
 import dd.projects.ddshop.Repositories.ProductDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 public class ProductService {
     @Autowired
     ProductDao productDao;
+    @Autowired
+    CategoryDao categoryDao;
 
     @Autowired
     ProductMapper productMapper;
@@ -24,6 +28,9 @@ public class ProductService {
         try {
             if (!Objects.isNull(productDTO)) {
                 Product product = productMapper.toEntity(productDTO);
+                Category category = categoryDao.findByName(product.getCategory().getName());
+                product.setCategory(category);
+                //Search for List<ValidAttribute> and set them then save
                 productDao.save(product);
                 return new ResponseEntity<String>("Product added successfully.", HttpStatus.OK);
             } else {
