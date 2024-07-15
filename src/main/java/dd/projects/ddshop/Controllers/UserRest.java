@@ -1,25 +1,32 @@
 package dd.projects.ddshop.Controllers;
 
 import dd.projects.ddshop.DTOs.ShopUserCreationDTO;
-import dd.projects.ddshop.Services.UserService;
+import dd.projects.ddshop.Services.ShopUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/user")
 public class UserRest {
     @Autowired
-    UserService userService;
+    ShopUserService shopUserService;
 
     @PostMapping(path = "/signup")
-    public ResponseEntity<String> signup(@RequestBody ShopUserCreationDTO shopUserCreationDTO) {
+    public ResponseEntity<String> signUp(@RequestBody ShopUserCreationDTO shopUserCreationDTO) {
         try {
-            return userService.signUp(shopUserCreationDTO);
+            return shopUserService.signUp(shopUserCreationDTO);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<String>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+        try {
+            return shopUserService.deleteUser(id);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

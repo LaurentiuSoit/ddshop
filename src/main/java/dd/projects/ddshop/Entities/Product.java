@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+@NamedQuery(name = "Product.findByName", query = "select p from Product p where p.name=:name")
 @Data
 @Entity
 @Table(name = "product")
@@ -21,7 +22,7 @@ public class Product implements Serializable {
     private String name;
     @Column(name = "product_description")
     private String description;
-    @Column(name = "price", unique = true)
+    @Column(name = "price")
     private Integer price;
     @Column(name = "available_quantity")
     private Integer availableQuantity;

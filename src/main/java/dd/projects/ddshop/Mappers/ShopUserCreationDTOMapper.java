@@ -5,6 +5,6 @@ import dd.projects.ddshop.Entities.ShopUser;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface ShopUserCreationDTOToShopUserMapper {
+public interface ShopUserCreationDTOMapper {
     ShopUser toEntity(ShopUserCreationDTO shopUserCreationDTO);
 }
