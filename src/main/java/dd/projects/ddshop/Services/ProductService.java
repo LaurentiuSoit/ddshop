@@ -58,7 +58,6 @@ public class ProductService {
                     }
                 }
                 product.setValidAttributeList(validAttributeList);
-                product.setId(null);
                 productDao.save(product);
                 return new ResponseEntity<>("Product added successfully.", HttpStatus.OK);
             } else {

@@ -4,6 +4,7 @@ import dd.projects.ddshop.DTOs.ShopUserCreationDTO;
 import dd.projects.ddshop.Entities.ShopUser;
 import dd.projects.ddshop.Mappers.ShopUserCreationDTOMapper;
 import dd.projects.ddshop.Repositories.ShopUserDao;
+import dd.projects.ddshop.Utils.DDShopUtils;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class ShopUserService {
             if (!Objects.isNull(shopUserCreationDTO)) {
                 ShopUser shopUser = shopUserCreationDTOMapper.toEntity(shopUserCreationDTO);
                 if (Objects.isNull(shopUserDao.findByEmail(shopUser.getEmail()))) {
-                    shopUser.setId(null);
+                    shopUser.setPassword(DDShopUtils.encodePasswordMD5(shopUser.getPassword()));
                     shopUserDao.save(shopUser);
                     return new ResponseEntity<>("Successfully Registered.", HttpStatus.OK);
                 } else {
