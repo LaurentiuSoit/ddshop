@@ -2,7 +2,6 @@ package dd.projects.ddshop.Controllers;
 
 import dd.projects.ddshop.DTOs.ShopUserCreationDTO;
 import dd.projects.ddshop.Services.ShopUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +9,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/user")
 public class UserRest {
-    @Autowired
+
     ShopUserService shopUserService;
+
+    public UserRest(ShopUserService shopUserService) {
+        this.shopUserService = shopUserService;
+    }
 
     @PostMapping(path = "/signup")
     public ResponseEntity<String> signUp(@RequestBody ShopUserCreationDTO shopUserCreationDTO) {
@@ -20,7 +23,10 @@ public class UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new ResponseEntity<String>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<String>(
+            "Something went wrong.",
+            HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
     @DeleteMapping(path = "/delete/{id}")
@@ -30,6 +36,9 @@ public class UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new ResponseEntity<String>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<String>(
+            "Something went wrong.",
+            HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 }

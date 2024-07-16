@@ -2,9 +2,8 @@ package dd.projects.ddshop.Mappers;
 
 import dd.projects.ddshop.DTOs.ProductAttributeDTO;
 import dd.projects.ddshop.Entities.ProductAttribute;
-import org.mapstruct.Mapper;
-
 import java.util.List;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ProductAttributeMapper {

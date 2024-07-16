@@ -1,11 +1,12 @@
 package dd.projects.ddshop.DTOs;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ValidAttributeDTO {
-    private ProductAttributeDTO productAttribute;
-    private List<ValidAttributeValueDTO> validAttributeValueList;
+
+    private Integer id;
+    private Integer productAttributeId;
+    private List<Integer> validAttributeValueIdList;
 }

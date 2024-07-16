@@ -2,9 +2,8 @@ package dd.projects.ddshop.Mappers;
 
 import dd.projects.ddshop.DTOs.ProductDTO;
 import dd.projects.ddshop.Entities.Product;
-import org.mapstruct.Mapper;
-
 import java.util.List;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {

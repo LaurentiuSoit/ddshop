@@ -4,5 +4,7 @@ import lombok.Data;
 
 @Data
 public class ValidAttributeValueDTO {
-    private AttributeValueDTO attributeValue;
+
+    private Integer id;
+    private Integer attributeValueId;
 }
