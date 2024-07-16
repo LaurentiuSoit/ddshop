@@ -39,7 +39,7 @@ public class ProductRest {
     }
 
     @GetMapping(path = "/getAll")
-    public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(String sortBy) {
+    public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(@RequestParam String sortBy) {
         try {
             return productService.getAllProductsSortedBy(sortBy);
         } catch (Exception ex) {

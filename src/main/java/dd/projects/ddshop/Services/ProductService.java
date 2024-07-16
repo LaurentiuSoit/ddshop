@@ -58,6 +58,7 @@ public class ProductService {
                     }
                 }
                 product.setValidAttributeList(validAttributeList);
+                product.setId(null);
                 productDao.save(product);
                 return new ResponseEntity<>("Product added successfully.", HttpStatus.OK);
             } else {
@@ -98,10 +99,10 @@ public class ProductService {
                     productDTOComparator = Comparator.comparing(ProductDTO::getAddedDate);
                     productDTOComparator = productDTOComparator.reversed();
                 }
-                case "price ascending" -> productDTOComparator = Comparator.comparing(
+                case "priceasc" -> productDTOComparator = Comparator.comparing(
                     ProductDTO::getPrice
                 );
-                case "price descending" -> {
+                case "pricedesc" -> {
                     productDTOComparator = Comparator.comparing(ProductDTO::getPrice);
                     productDTOComparator = productDTOComparator.reversed();
                 }
