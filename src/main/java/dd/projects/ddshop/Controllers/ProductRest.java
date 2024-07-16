@@ -18,6 +18,26 @@ public class ProductRest {
         this.productService = productService;
     }
 
+    @PostMapping(path = "/add")
+    public ResponseEntity<String> addProduct(@RequestBody ProductDTO productDTO) {
+        try {
+            return productService.addProduct(productDTO);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(path = "/get/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
+        try {
+            return productService.getProductById(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping(path = "/getAll")
     public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(String sortBy) {
         try {
@@ -25,7 +45,7 @@ public class ProductRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new ResponseEntity<>(new ArrayList<ProductDTO>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @DeleteMapping(path = "/delete/{id}")
@@ -35,9 +55,6 @@ public class ProductRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new ResponseEntity<String>(
-            "Something went wrong.",
-            HttpStatus.INTERNAL_SERVER_ERROR
-        );
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
