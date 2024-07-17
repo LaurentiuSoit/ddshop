@@ -59,7 +59,11 @@ public class ProductService {
                 }
                 product.setValidAttributeList(validAttributeList);
                 productDao.save(product);
-                return new ResponseEntity<>("Product added successfully.", HttpStatus.OK);
+                if (product.getId() == null) {
+                    return new ResponseEntity<>("Product added successfully.", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Product updated successfully.", HttpStatus.OK);
+                }
             } else {
                 return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
             }

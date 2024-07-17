@@ -28,6 +28,16 @@ public class ProductRest {
         return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @PutMapping(path = "/update")
+    public ResponseEntity<String> updateProduct(@RequestBody ProductDTO productDTO) {
+        try {
+            return productService.addProduct(productDTO);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping(path = "/get/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
         try {
