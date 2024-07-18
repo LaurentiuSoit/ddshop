@@ -5,6 +5,7 @@ import dd.projects.ddshop.Entities.ShopUser;
 import dd.projects.ddshop.Mappers.ShopUserCreationDTOMapper;
 import dd.projects.ddshop.Repositories.ShopUserDao;
 import dd.projects.ddshop.Utils.DDShopUtils;
+import dd.projects.ddshop.Validators.UserValidator;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -29,13 +30,20 @@ public class ShopUserService {
     public ResponseEntity<String> signUp(ShopUserCreationDTO shopUserCreationDTO) {
         try {
             if (!Objects.isNull(shopUserCreationDTO)) {
-                ShopUser shopUser = shopUserCreationDTOMapper.toEntity(shopUserCreationDTO);
-                if (Objects.isNull(shopUserDao.findByEmail(shopUser.getEmail()))) {
-                    shopUser.setPassword(DDShopUtils.encodePasswordMD5(shopUser.getPassword()));
-                    shopUserDao.save(shopUser);
-                    return new ResponseEntity<>("Successfully Registered.", HttpStatus.OK);
+                if (UserValidator.validateSignUp(shopUserCreationDTO)) {
+                    ShopUser shopUser = shopUserCreationDTOMapper.toEntity(shopUserCreationDTO);
+                    if (Objects.isNull(shopUserDao.findByEmail(shopUser.getEmail()))) {
+                        shopUser.setPassword(DDShopUtils.encodePasswordMD5(shopUser.getPassword()));
+                        shopUserDao.save(shopUser);
+                        return new ResponseEntity<>("Successfully Registered.", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(
+                            "Email already in use.",
+                            HttpStatus.BAD_REQUEST
+                        );
+                    }
                 } else {
-                    return new ResponseEntity<>("Email already in use.", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
