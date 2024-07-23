@@ -138,7 +138,7 @@ public class ProductService {
         return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private static void productDTOAssignFKIds(ProductDTO productDTO, Product product) {
+    private void productDTOAssignFKIds(ProductDTO productDTO, Product product) {
         productDTO.setCategoryId(product.getCategory().getId());
         List<Integer> validAttributeIdList = new ArrayList<>();
         for (ValidAttribute validAttribute : product.getValidAttributeList()) {
