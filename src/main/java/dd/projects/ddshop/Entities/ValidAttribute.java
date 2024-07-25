@@ -23,7 +23,7 @@ public class ValidAttribute implements Serializable {
     @JoinColumn(name = "product_attribute_id")
     private ProductAttribute productAttribute;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "valid_attribute_id")
     private List<ValidAttributeValue> validAttributeValueList;
 }

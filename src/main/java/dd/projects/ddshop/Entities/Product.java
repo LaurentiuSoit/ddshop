@@ -38,7 +38,7 @@ public class Product implements Serializable {
     @ManyToOne
     private Category category;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "product_id")
     private List<ValidAttribute> validAttributeList;
 }
