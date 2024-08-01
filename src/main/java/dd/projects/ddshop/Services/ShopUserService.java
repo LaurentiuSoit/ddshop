@@ -1,5 +1,6 @@
 package dd.projects.ddshop.Services;
 
+import dd.projects.ddshop.DTOs.LoginDTO;
 import dd.projects.ddshop.DTOs.ShopUserCreationDTO;
 import dd.projects.ddshop.Entities.ShopUser;
 import dd.projects.ddshop.Mappers.ShopUserCreationDTOMapper;
@@ -42,6 +43,34 @@ public class ShopUserService {
                             HttpStatus.BAD_REQUEST
                         );
                     }
+                } else {
+                    return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public ResponseEntity<String> login(LoginDTO loginDTO) {
+        try {
+            if (!Objects.isNull(loginDTO)) {
+                if (UserValidator.validateLogin(loginDTO)) {
+                    ShopUser shopUser = shopUserDao.findByEmail(loginDTO.getEmail());
+                    if (!Objects.isNull(shopUser)) {
+                        String response = DDShopUtils.encodePasswordMD5(
+                                loginDTO.getPassword()
+                            ).equals(shopUser.getPassword())
+                            ? "Successfully Logged in."
+                            : "Wrong credentials.";
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    } else return new ResponseEntity<>(
+                        "Email does not exist.",
+                        HttpStatus.BAD_REQUEST
+                    );
                 } else {
                     return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
                 }

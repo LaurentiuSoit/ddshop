@@ -1,5 +1,6 @@
 package dd.projects.ddshop.Controllers;
 
+import dd.projects.ddshop.DTOs.LoginDTO;
 import dd.projects.ddshop.DTOs.ShopUserCreationDTO;
 import dd.projects.ddshop.Services.ShopUserService;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,17 @@ public class UserRest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return new ResponseEntity<String>(
-            "Something went wrong.",
-            HttpStatus.INTERNAL_SERVER_ERROR
-        );
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(path = "/login")
+    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
+        try {
+            return shopUserService.login(loginDTO);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/delete/{id}")
