@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/category")
@@ -20,6 +18,16 @@ public class CategoryRest {
         this.categoryService = categoryService;
     }
 
+    @PostMapping(path = "/add")
+    public ResponseEntity<String> addCategory(@RequestBody CategoryDTO categoryDTO) {
+        try {
+            return categoryService.addCategory(categoryDTO);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping(path = "/getAll")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         try {
@@ -28,5 +36,15 @@ public class CategoryRest {
             ex.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(path = "/get/{id}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Integer id) {
+        try {
+            return categoryService.getCategoryById(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new CategoryDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

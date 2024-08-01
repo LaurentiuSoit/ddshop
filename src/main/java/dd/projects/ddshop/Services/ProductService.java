@@ -90,6 +90,21 @@ public class ProductService {
         return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(Integer categoryId) {
+        try {
+            List<ProductDTO> productDTOList = productMapper.toDTOList(
+                productDao.findByCategory(categoryId)
+            );
+            for (ProductDTO productDTO : productDTOList) {
+                productDTOAssignFKIds(productDTO, productDao.findById(productDTO.getId()).get());
+            }
+            return new ResponseEntity<>(productDTOList, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(String sortBy) {
         try {
             List<ProductDTO> productDTOList = productMapper.toDTOList(productDao.findAll());

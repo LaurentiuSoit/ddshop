@@ -48,6 +48,18 @@ public class ProductRest {
         return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping(path = "/getByCategory")
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
+        @RequestParam Integer categoryId
+    ) {
+        try {
+            return productService.getProductsByCategory(categoryId);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping(path = "/getAll")
     public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(@RequestParam String sortBy) {
         try {
