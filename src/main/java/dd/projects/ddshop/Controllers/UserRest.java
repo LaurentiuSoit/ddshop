@@ -27,7 +27,7 @@ public class UserRest {
         return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping(path = "/login")
+    @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
         try {
             return shopUserService.login(loginDTO);

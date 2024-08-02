@@ -64,7 +64,7 @@ public class ShopUserService {
                         String response = DDShopUtils.encodePasswordMD5(
                                 loginDTO.getPassword()
                             ).equals(shopUser.getPassword())
-                            ? "Successfully Logged in."
+                            ? "Logged in."
                             : "Wrong credentials.";
                         return new ResponseEntity<>(response, HttpStatus.OK);
                     } else return new ResponseEntity<>(

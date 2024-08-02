@@ -8,6 +8,7 @@ import dd.projects.ddshop.Mappers.ProductMapper;
 import dd.projects.ddshop.Repositories.CategoryDao;
 import dd.projects.ddshop.Repositories.ProductDao;
 import dd.projects.ddshop.Repositories.ValidAttributeDao;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ public class ProductService {
         try {
             if (!Objects.isNull(productDTO)) {
                 Product product = productMapper.toEntity(productDTO);
+                product.setAddedDate(LocalDate.now());
                 Optional<Category> categoryOptional = categoryDao.findById(
                     productDTO.getCategoryId()
                 );
@@ -90,7 +92,10 @@ public class ProductService {
         return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(Integer categoryId) {
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
+        Integer categoryId,
+        String sortBy
+    ) {
         try {
             List<ProductDTO> productDTOList = productMapper.toDTOList(
                 productDao.findByCategory(categoryId)
@@ -98,40 +103,45 @@ public class ProductService {
             for (ProductDTO productDTO : productDTOList) {
                 productDTOAssignFKIds(productDTO, productDao.findById(productDTO.getId()).get());
             }
-            return new ResponseEntity<>(productDTOList, HttpStatus.OK);
+            return sortedProductList(sortBy, productDTOList);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(String sortBy) {
+    private static ResponseEntity<List<ProductDTO>> sortedProductList(
+        String sortBy,
+        List<ProductDTO> productDTOList
+    ) {
+        Comparator<ProductDTO> productDTOComparator;
+        switch (sortBy.toLowerCase()) {
+            case "newest" -> {
+                productDTOComparator = Comparator.comparing(ProductDTO::getId);
+                productDTOComparator = productDTOComparator.reversed();
+            }
+            case "priceasc" -> productDTOComparator = Comparator.comparing(ProductDTO::getPrice);
+            case "pricedesc" -> {
+                productDTOComparator = Comparator.comparing(ProductDTO::getPrice);
+                productDTOComparator = productDTOComparator.reversed();
+            }
+            default -> {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            }
+        }
+        return new ResponseEntity<>(
+            productDTOList.stream().sorted(productDTOComparator).collect(Collectors.toList()),
+            HttpStatus.OK
+        );
+    }
+
+    public ResponseEntity<List<ProductDTO>> getAllProducts(String sortBy) {
         try {
             List<ProductDTO> productDTOList = productMapper.toDTOList(productDao.findAll());
             for (ProductDTO productDTO : productDTOList) {
                 productDTOAssignFKIds(productDTO, productDao.findById(productDTO.getId()).get());
             }
-            Comparator<ProductDTO> productDTOComparator;
-            switch (sortBy.toLowerCase()) {
-                case "newest" -> {
-                    productDTOComparator = Comparator.comparing(ProductDTO::getAddedDate);
-                    productDTOComparator = productDTOComparator.reversed();
-                }
-                case "priceasc" -> productDTOComparator = Comparator.comparing(
-                    ProductDTO::getPrice
-                );
-                case "pricedesc" -> {
-                    productDTOComparator = Comparator.comparing(ProductDTO::getPrice);
-                    productDTOComparator = productDTOComparator.reversed();
-                }
-                default -> {
-                    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-                }
-            }
-            return new ResponseEntity<>(
-                productDTOList.stream().sorted(productDTOComparator).collect(Collectors.toList()),
-                HttpStatus.OK
-            );
+            return sortedProductList(sortBy, productDTOList);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

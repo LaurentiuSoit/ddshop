@@ -50,10 +50,11 @@ public class ProductRest {
 
     @GetMapping(path = "/getByCategory")
     public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-        @RequestParam Integer categoryId
+        @RequestParam Integer categoryId,
+        @RequestParam String sortBy
     ) {
         try {
-            return productService.getProductsByCategory(categoryId);
+            return productService.getProductsByCategory(categoryId, sortBy);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -61,9 +62,9 @@ public class ProductRest {
     }
 
     @GetMapping(path = "/getAll")
-    public ResponseEntity<List<ProductDTO>> getAllProductsSortedBy(@RequestParam String sortBy) {
+    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam String sortBy) {
         try {
-            return productService.getAllProductsSortedBy(sortBy);
+            return productService.getAllProducts(sortBy);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
