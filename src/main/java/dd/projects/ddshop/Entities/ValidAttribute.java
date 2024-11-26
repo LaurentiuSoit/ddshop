@@ -3,7 +3,6 @@ package dd.projects.ddshop.Entities;
 import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 import lombok.Data;
 
 @Data
@@ -23,7 +22,7 @@ public class ValidAttribute implements Serializable {
     @JoinColumn(name = "product_attribute_id")
     private ProductAttribute productAttribute;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "valid_attribute_id")
-    private List<ValidAttributeValue> validAttributeValueList;
+    @OneToOne
+    @JoinColumn(name = "attribute_value_id")
+    private AttributeValue attributeValue;
 }

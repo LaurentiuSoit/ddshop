@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -40,5 +41,5 @@ public class Product implements Serializable {
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "product_id")
-    private List<ValidAttribute> validAttributeList;
+    private List<ValidAttribute> validAttributeList = new ArrayList<>();
 }

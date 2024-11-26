@@ -1,12 +1,15 @@
 package dd.projects.ddshop.Services;
 
+import dd.projects.ddshop.DTOs.AttributeDTO;
 import dd.projects.ddshop.DTOs.ProductDTO;
+import dd.projects.ddshop.DTOs.ProductFilterCriteria;
 import dd.projects.ddshop.Entities.Category;
 import dd.projects.ddshop.Entities.Product;
 import dd.projects.ddshop.Entities.ValidAttribute;
 import dd.projects.ddshop.Mappers.ProductMapper;
 import dd.projects.ddshop.Repositories.CategoryDao;
 import dd.projects.ddshop.Repositories.ProductDao;
+import dd.projects.ddshop.Repositories.ProductSpecifications;
 import dd.projects.ddshop.Repositories.ValidAttributeDao;
 import java.time.LocalDate;
 import java.util.*;
@@ -48,18 +51,6 @@ public class ProductService {
                 } else {
                     return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
                 }
-                List<ValidAttribute> validAttributeList = new ArrayList<>();
-                for (Integer validAttributeId : productDTO.getValidAttributeIdList()) {
-                    Optional<ValidAttribute> validAttributeOptional = validAttributeDao.findById(
-                        validAttributeId
-                    );
-                    if (validAttributeOptional.isPresent()) {
-                        validAttributeList.add(validAttributeOptional.get());
-                    } else {
-                        return new ResponseEntity<>("Bad Request.", HttpStatus.BAD_REQUEST);
-                    }
-                }
-                product.setValidAttributeList(validAttributeList);
                 productDao.save(product);
                 if (product.getId() == null) {
                     return new ResponseEntity<>("Product added successfully.", HttpStatus.OK);
@@ -92,14 +83,15 @@ public class ProductService {
         return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-        Integer categoryId,
-        String sortBy
+    public ResponseEntity<List<ProductDTO>> filterProducts(
+        String sortBy,
+        ProductFilterCriteria criteria
     ) {
         try {
-            List<ProductDTO> productDTOList = productMapper.toDTOList(
-                productDao.findByCategory(categoryId)
+            List<Product> productList = productDao.findAll(
+                ProductSpecifications.filterProducts(criteria)
             );
+            List<ProductDTO> productDTOList = productMapper.toDTOList(productList);
             for (ProductDTO productDTO : productDTOList) {
                 productDTOAssignFKIds(productDTO, productDao.findById(productDTO.getId()).get());
             }
@@ -135,13 +127,20 @@ public class ProductService {
         );
     }
 
-    public ResponseEntity<List<ProductDTO>> getAllProducts(String sortBy) {
+    public ResponseEntity<List<AttributeDTO>> getProductAttributes(Integer id) {
         try {
-            List<ProductDTO> productDTOList = productMapper.toDTOList(productDao.findAll());
-            for (ProductDTO productDTO : productDTOList) {
-                productDTOAssignFKIds(productDTO, productDao.findById(productDTO.getId()).get());
-            }
-            return sortedProductList(sortBy, productDTOList);
+            Optional<Product> optionalProduct = productDao.findById(id);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                List<AttributeDTO> attributeDTOList = new ArrayList<>();
+                for (ValidAttribute validAttribute : product.getValidAttributeList()) {
+                    AttributeDTO attributeDTO = new AttributeDTO();
+                    attributeDTO.setName(validAttribute.getProductAttribute().getName());
+                    attributeDTO.setValue(validAttribute.getAttributeValue().getValue());
+                    attributeDTOList.add(attributeDTO);
+                }
+                return new ResponseEntity<>(attributeDTOList, HttpStatus.OK);
+            } else return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

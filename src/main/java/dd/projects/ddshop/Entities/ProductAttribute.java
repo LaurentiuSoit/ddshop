@@ -3,6 +3,7 @@ package dd.projects.ddshop.Entities;
 import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -24,5 +25,5 @@ public class ProductAttribute implements Serializable {
 
     @OneToMany
     @JoinColumn(name = "product_attribute_id")
-    private List<AttributeValue> attributeValueList;
+    private List<AttributeValue> attributeValueList = new ArrayList<>();
 }

@@ -1,6 +1,8 @@
 package dd.projects.ddshop.Controllers;
 
+import dd.projects.ddshop.DTOs.AttributeDTO;
 import dd.projects.ddshop.DTOs.ProductDTO;
+import dd.projects.ddshop.DTOs.ProductFilterCriteria;
 import dd.projects.ddshop.Services.ProductService;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,23 +50,18 @@ public class ProductRest {
         return new ResponseEntity<>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping(path = "/getByCategory")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-        @RequestParam Integer categoryId,
-        @RequestParam String sortBy
+    @PostMapping("/filter")
+    public ResponseEntity<List<ProductDTO>> filterProducts(
+        @RequestParam String sortBy,
+        @RequestBody ProductFilterCriteria criteria
     ) {
-        try {
-            return productService.getProductsByCategory(categoryId, sortBy);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return productService.filterProducts(sortBy, criteria);
     }
 
-    @GetMapping(path = "/getAll")
-    public ResponseEntity<List<ProductDTO>> getAllProducts(@RequestParam String sortBy) {
+    @GetMapping(path = "/getAttributes/{id}")
+    public ResponseEntity<List<AttributeDTO>> getProductAttributes(@PathVariable Integer id) {
         try {
-            return productService.getAllProducts(sortBy);
+            return productService.getProductAttributes(id);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

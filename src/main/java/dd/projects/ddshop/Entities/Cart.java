@@ -3,6 +3,7 @@ package dd.projects.ddshop.Entities;
 import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 
@@ -23,9 +24,8 @@ public class Cart implements Serializable {
     @JoinColumn(name = "shop_user_id")
     private ShopUser shopUser;
 
-    @OneToMany
-    @JoinColumn(name = "cart_id")
-    private List<CartEntry> cartEntryList;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.REMOVE)
+    private List<CartEntry> cartEntryList = new ArrayList<>();
 
     @Column(name = "total_price")
     private Integer totalPrice;

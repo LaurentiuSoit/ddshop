@@ -19,6 +19,11 @@ public class CartEntry implements Serializable {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(name = "quantity")

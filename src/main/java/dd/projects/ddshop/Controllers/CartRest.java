@@ -4,10 +4,7 @@ import dd.projects.ddshop.DTOs.CartDTO;
 import dd.projects.ddshop.Services.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/cart")
@@ -27,5 +24,19 @@ public class CartRest {
             ex.printStackTrace();
         }
         return new ResponseEntity<>(new CartDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(path = "/add")
+    public ResponseEntity<String> addProductToCart(
+        @RequestParam Integer cartId,
+        @RequestParam Integer productId,
+        @RequestParam Integer quantity
+    ) {
+        try {
+            return cartService.addProductToCart(cartId, productId, quantity);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
