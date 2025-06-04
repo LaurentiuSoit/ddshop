@@ -47,4 +47,14 @@ public class AddressRest {
         }
         return new ResponseEntity<>(new AddressDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping(path = "/getByUser/{id}")
+    public ResponseEntity<List<AddressDTO>> getAddressByUser(@PathVariable Integer id) {
+        try {
+            return addressService.getAddressByUser(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

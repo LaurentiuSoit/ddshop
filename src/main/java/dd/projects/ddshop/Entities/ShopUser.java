@@ -3,6 +3,8 @@ package dd.projects.ddshop.Entities;
 import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -40,4 +42,8 @@ public class ShopUser implements Serializable {
     @OneToOne
     @JoinColumn(name = "default_billing_address")
     private Address defaultBillingAddress;
+
+    @OneToMany
+    @JoinColumn(name = "shop_user_id")
+    private List<Address> addressList = new ArrayList<>();
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -50,4 +52,8 @@ public class ShopOrder implements Serializable {
 
     @Column(name = "order_date")
     private LocalDate orderDate;
+
+    @OneToMany
+    @JoinColumn(name = "shop_order_id")
+    private List<ShopOrderEntry> shopOrderEntries = new ArrayList<>();
 }

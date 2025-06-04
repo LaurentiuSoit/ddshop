@@ -64,4 +64,16 @@ public class AddressService {
         }
         return new ResponseEntity<>(new AddressDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    public ResponseEntity<List<AddressDTO>> getAddressByUser(Integer id) {
+        try {
+            return new ResponseEntity<>(
+                addressMapper.toDTOList(addressDao.findByShopUserId(id)),
+                HttpStatus.OK
+            );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

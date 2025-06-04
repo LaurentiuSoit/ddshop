@@ -96,7 +96,7 @@ public class ShopUserService {
                         response.put("id", shopUser.getId().toString());
                         return new ResponseEntity<>(response, HttpStatus.OK);
                     } else {
-                        response.put("message", "Email does not exist.");
+                        response.put("message", "Account does not exist.");
                         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                     }
                 } else {

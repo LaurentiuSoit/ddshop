@@ -1,8 +1,10 @@
 package dd.projects.ddshop.Services;
 
 import dd.projects.ddshop.DTOs.ShopOrderDTO;
+import dd.projects.ddshop.DTOs.ShopOrderEntryDTO;
 import dd.projects.ddshop.Entities.*;
 import dd.projects.ddshop.Exceptions.InsufficientQuantityException;
+import dd.projects.ddshop.Mappers.ShopOrderEntryMapper;
 import dd.projects.ddshop.Mappers.ShopOrderMapper;
 import dd.projects.ddshop.Repositories.*;
 import jakarta.persistence.EntityManager;
@@ -28,6 +30,8 @@ public class ShopOrderService {
     CartEntryService cartEntryService;
     EntityManager entityManager;
     ProductDao productDao;
+    ShopOrderEntryDao shopOrderEntryDao;
+    ShopOrderEntryMapper shopOrderEntryMapper;
 
     public ShopOrderService(
         ShopOrderDao shopOrderDao,
@@ -38,7 +42,9 @@ public class ShopOrderService {
         AddressDao addressDao,
         CartEntryService cartEntryService,
         EntityManager entityManager,
-        ProductDao productDao
+        ProductDao productDao,
+        ShopOrderEntryDao shopOrderEntryDao,
+        ShopOrderEntryMapper shopOrderEntryMapper
     ) {
         this.shopOrderDao = shopOrderDao;
         this.shopOrderMapper = shopOrderMapper;
@@ -49,6 +55,8 @@ public class ShopOrderService {
         this.cartEntryService = cartEntryService;
         this.entityManager = entityManager;
         this.productDao = productDao;
+        this.shopOrderEntryDao = shopOrderEntryDao;
+        this.shopOrderEntryMapper = shopOrderEntryMapper;
     }
 
     @Transactional
@@ -83,6 +91,7 @@ public class ShopOrderService {
                 shopOrder.setShopUser(shopUser);
                 shopOrder.setInvoiceAddress(billingAddress);
                 shopOrder.setDeliveryAddress(deliveryAddress);
+                saveOrderEntries(shopOrder, cart.getCartEntryList());
                 shopOrderDao.save(shopOrder);
                 Integer orderTotalPrice = cart.getTotalPrice();
                 subtractQuantity(cart.getCartEntryList());
@@ -107,6 +116,31 @@ public class ShopOrderService {
         return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public ResponseEntity<List<ShopOrderDTO>> getOrdersByUser(Integer id) {
+        try {
+            List<ShopOrder> shopOrders = shopOrderDao.getOrdersByUser(id);
+            List<ShopOrderDTO> shopOrderDTOList = new ArrayList<>();
+            for (ShopOrder shopOrder : shopOrders) {
+                ShopOrderDTO shopOrderDTO = shopOrderMapper.toDTO(shopOrder);
+                shopOrderDTOAssignFKIds(shopOrderDTO, shopOrder);
+                shopOrderDTO.setOrderEntries(
+                    shopOrderEntryMapper.toDTOList(shopOrder.getShopOrderEntries())
+                );
+                for (ShopOrderEntryDTO shopOrderEntryDTO : shopOrderDTO.getOrderEntries()) {
+                    shopOrderEntryDTOAssignFKIds(
+                        shopOrderEntryDTO,
+                        shopOrderEntryDao.findById(shopOrderEntryDTO.getId()).get()
+                    );
+                }
+                shopOrderDTOList.add(shopOrderDTO);
+            }
+            return new ResponseEntity<>(shopOrderDTOList.reversed(), HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     private void subtractQuantity(List<CartEntry> cartEntryList) {
         for (CartEntry cartEntry : cartEntryList) {
             Product product = cartEntry.getProduct();
@@ -125,6 +159,21 @@ public class ShopOrderService {
                 productDao.save(product);
             }
         }
+    }
+
+    private void saveOrderEntries(ShopOrder shopOrder, List<CartEntry> cartEntryList) {
+        for (CartEntry cartEntry : cartEntryList) {
+            ShopOrderEntry shopOrderEntry = mapCartEntryToShopOrderEntry(cartEntry);
+            shopOrder.getShopOrderEntries().add(shopOrderEntry);
+            shopOrderEntryDao.save(shopOrderEntry);
+        }
+    }
+
+    private ShopOrderEntry mapCartEntryToShopOrderEntry(CartEntry cartEntry) {
+        ShopOrderEntry shopOrderEntry = new ShopOrderEntry();
+        shopOrderEntry.setProduct(cartEntry.getProduct());
+        shopOrderEntry.setQuantity(cartEntry.getQuantity());
+        return shopOrderEntry;
     }
 
     private void clearCart(Cart cart) {
@@ -181,28 +230,17 @@ public class ShopOrderService {
         javaMailSender.send(message);
     }
 
-    public ResponseEntity<List<ShopOrderDTO>> getOrdersByUser(Integer id) {
-        try {
-            List<ShopOrderDTO> shopOrderDTOList = shopOrderMapper.toDTOList(
-                shopOrderDao.getOrdersByUser(id)
-            );
-            for (ShopOrderDTO shopOrderDTO : shopOrderDTOList) {
-                shopOrderDTOAssignFKIds(
-                    shopOrderDTO,
-                    shopOrderDao.findById(shopOrderDTO.getId()).get()
-                );
-            }
-            return new ResponseEntity<>(shopOrderDTOList.reversed(), HttpStatus.OK);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     private void shopOrderDTOAssignFKIds(ShopOrderDTO shopOrderDTO, ShopOrder shopOrder) {
         shopOrderDTO.setShopUserId(shopOrder.getShopUser().getId());
         shopOrderDTO.setCartId(shopOrder.getCart().getId());
         shopOrderDTO.setDeliveryAddressId(shopOrder.getDeliveryAddress().getId());
         shopOrderDTO.setInvoiceAddressId(shopOrder.getInvoiceAddress().getId());
+    }
+
+    private void shopOrderEntryDTOAssignFKIds(
+        ShopOrderEntryDTO shopOrderEntryDTO,
+        ShopOrderEntry shopOrderEntry
+    ) {
+        shopOrderEntryDTO.setProductId(shopOrderEntry.getProduct().getId());
     }
 }
