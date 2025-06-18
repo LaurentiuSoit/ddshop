@@ -1,6 +1,6 @@
 package dd.projects.ddshop.Repositories;
 
-import dd.projects.ddshop.DTOs.ProductFilterCriteria;
+import dd.projects.ddshop.DTOs.ProductFilterCriteriaDTO;
 import dd.projects.ddshop.Entities.Product;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class ProductSpecifications {
 
-    public static Specification<Product> filterProducts(ProductFilterCriteria criteria) {
+    public static Specification<Product> filterProducts(ProductFilterCriteriaDTO criteria) {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 

@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/attribute_value")
-public class AttributeValueRest {
+public class AttributeValueController {
 
     AttributeValueService attributeValueService;
 
-    public AttributeValueRest(AttributeValueService attributeValueService) {
+    public AttributeValueController(AttributeValueService attributeValueService) {
         this.attributeValueService = attributeValueService;
     }
 

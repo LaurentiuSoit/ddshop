@@ -2,7 +2,7 @@ package dd.projects.ddshop.Controllers;
 
 import dd.projects.ddshop.DTOs.AttributeDTO;
 import dd.projects.ddshop.DTOs.ProductDTO;
-import dd.projects.ddshop.DTOs.ProductFilterCriteria;
+import dd.projects.ddshop.DTOs.ProductFilterCriteriaDTO;
 import dd.projects.ddshop.Services.ProductService;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/product")
-public class ProductRest {
+public class ProductController {
 
     ProductService productService;
 
-    public ProductRest(ProductService productService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -53,7 +53,7 @@ public class ProductRest {
     @PostMapping("/filter")
     public ResponseEntity<List<ProductDTO>> filterProducts(
         @RequestParam String sortBy,
-        @RequestBody ProductFilterCriteria criteria
+        @RequestBody ProductFilterCriteriaDTO criteria
     ) {
         return productService.filterProducts(sortBy, criteria);
     }

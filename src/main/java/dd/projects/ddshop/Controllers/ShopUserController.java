@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/user")
-public class UserRest {
+public class ShopUserController {
 
     ShopUserService shopUserService;
 
-    public UserRest(ShopUserService shopUserService) {
+    public ShopUserController(ShopUserService shopUserService) {
         this.shopUserService = shopUserService;
     }
 

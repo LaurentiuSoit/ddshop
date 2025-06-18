@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/product_attribute")
-public class ProductAttributeRest {
+public class ProductAttributeController {
 
     ProductAttributeService productAttributeService;
 
-    public ProductAttributeRest(ProductAttributeService productAttributeService) {
+    public ProductAttributeController(ProductAttributeService productAttributeService) {
         this.productAttributeService = productAttributeService;
     }
 

@@ -2,7 +2,7 @@ package dd.projects.ddshop.Services;
 
 import dd.projects.ddshop.DTOs.AttributeDTO;
 import dd.projects.ddshop.DTOs.ProductDTO;
-import dd.projects.ddshop.DTOs.ProductFilterCriteria;
+import dd.projects.ddshop.DTOs.ProductFilterCriteriaDTO;
 import dd.projects.ddshop.Entities.Category;
 import dd.projects.ddshop.Entities.Product;
 import dd.projects.ddshop.Entities.ValidAttribute;
@@ -85,7 +85,7 @@ public class ProductService {
 
     public ResponseEntity<List<ProductDTO>> filterProducts(
         String sortBy,
-        ProductFilterCriteria criteria
+        ProductFilterCriteriaDTO criteria
     ) {
         try {
             List<Product> productList = productDao.findAll(

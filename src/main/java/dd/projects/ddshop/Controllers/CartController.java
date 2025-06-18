@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/cart")
-public class CartRest {
+public class CartController {
 
     CartService cartService;
 
-    public CartRest(CartService cartService) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 

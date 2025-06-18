@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ProductFilterCriteria {
+public class ProductFilterCriteriaDTO {
 
     private boolean inStock;
     private Integer minPrice;

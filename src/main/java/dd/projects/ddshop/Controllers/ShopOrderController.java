@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/order")
-public class ShopOrderRest {
+public class ShopOrderController {
 
     ShopOrderService shopOrderService;
 
-    public ShopOrderRest(ShopOrderService shopOrderService) {
+    public ShopOrderController(ShopOrderService shopOrderService) {
         this.shopOrderService = shopOrderService;
     }
 

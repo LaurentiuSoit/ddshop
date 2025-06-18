@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/cartEntry")
-public class CartEntryRest {
+public class CartEntryController {
 
     CartEntryService cartEntryService;
 
-    public CartEntryRest(CartEntryService cartEntryService) {
+    public CartEntryController(CartEntryService cartEntryService) {
         this.cartEntryService = cartEntryService;
     }
 
